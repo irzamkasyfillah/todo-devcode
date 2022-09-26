@@ -11,6 +11,8 @@ router.post('/', activityController.create)
 
 router.put('/:id', activityController.update)
 
+router.patch('/:id', activityController.update)
+
 router.delete('/:id', activityController.deleteOne)
 
 module.exports = router

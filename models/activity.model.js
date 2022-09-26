@@ -3,12 +3,14 @@ const sql = require("../db/db");
 // constructor
 const Activity = function(activity) {
   this.title = activity.title;
-  this.created_at = activity.created_at;
-  this.updated_at = activity.updated_at;
+  this.email = activity.email;
+  // this.created_at = activity.created_at;
+  // this.updated_at = activity.updated_at;
+  // this.deleted_at = activity.deleted_at;
 };
 
 Activity.create = (newActivity, result) => {
-  sql.query("INSERT INTO activity SET ?", newActivity, (err, res) => {
+  sql.query("INSERT INTO activities SET ?", newActivity, (err, res) => {
     if (err) {
       result(err, null);
       return;
@@ -18,16 +20,9 @@ Activity.create = (newActivity, result) => {
 };
 
 
-Activity.findTodoById = (id, result) => {
-  sql.query(`SELECT * FROM todo WHERE activity_group_id = ${id}`, (err, res) => {
-    result(null, res)
-  });
-};
-
-
 Activity.findById = async (id, result) => {
-  sql.query(`SELECT * FROM todo WHERE activity_group_id = ${id}`, (err, data) => {
-    sql.query(`SELECT * FROM activity WHERE id = ${id}`, (err, res) => {
+  sql.query(`SELECT * FROM todos WHERE activity_group_id = ${id}`, (err, data) => {
+    sql.query(`SELECT * FROM activities WHERE id = ${id}`, (err, res) => {
       if (err) {
         result(err, null);
         return;
@@ -37,7 +32,7 @@ Activity.findById = async (id, result) => {
         result(null, {...res[0], todo_items : data});
         return;
       }
-  
+      
       // not found Activity with the id
       result({ kind: "not_found" }, null);
     });
@@ -46,7 +41,7 @@ Activity.findById = async (id, result) => {
 
 
 Activity.findAll = (result) => {
-  sql.query("SELECT * FROM activity LIMIT 1000", (err, res) => {
+  sql.query("SELECT * FROM activities LIMIT 1000", (err, res) => {
     if (err) {
       result(null, err);
       return;
@@ -57,7 +52,7 @@ Activity.findAll = (result) => {
 
 
 Activity.updateById = (id, activity, result) => {
-    sql.query("UPDATE activity SET ? WHERE id = ?", [activity, id],(err, res) => {
+  sql.query("UPDATE activities SET ? WHERE id = ?", [activity, id], (err, res) => {
         if (err) {
             result(null, err);
             return;
@@ -69,15 +64,15 @@ Activity.updateById = (id, activity, result) => {
             return;
         }
 
-        sql.query(`SELECT * FROM activity WHERE id = ${id}`, (err, res) => {
-          result(null, res[0]);
+        sql.query(`SELECT * FROM activities WHERE id = ${id}`, (err, res) => {
+            result(null, res[0]);
         })
-    });
+      });
 };
 
 
 Activity.remove = (id, result) => {
-    sql.query("DELETE FROM activity WHERE id = ?", id, (err, res) => {
+    sql.query("DELETE FROM activities WHERE id = ?", id, (err, res) => {
         if (err) {
             result(null, err);
             return;
