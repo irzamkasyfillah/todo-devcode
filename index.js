@@ -14,7 +14,6 @@ app.use("/activity-groups", activity)
 app.use("/todo-items", todo)
 
 app.get('*', (req, res) => {
-    console.log("masa dosomo")
     res.status(404).send({ message : 'Resource Not Found'})
 })
 
